@@ -1,0 +1,142 @@
+PennController.ResetPrefix(null);
+
+PennController.PreloadZip("http://mondo1.dreamhosters.com/List1Items/List1FinalVideos.zip")
+
+// PREFACE PAGE
+PennController(
+    defaultText
+        .print()
+    ,
+    newText("<p>Welcome!</p>")
+    ,
+    newText("<p>These are the instructions.</p>")   // Enter Instructions for the experiment here
+    ,
+     newText("<p>Please enter your ID and then click the button below to start the experiment.</p>")
+    ,
+    newTextInput("ID")
+        .print()
+    ,
+    newButton("Start")
+       .print()
+        .wait()
+    ,
+    newVar("ID")
+        .settings.global()
+        .set( getTextInput("ID") )
+)
+.log( "ID" , getVar("ID") )
+PennController(
+    // INSTRUCTIONS PAGE
+    newImage("logo", "pcibex-logo.png")     // New Image element named "logo" using the file "pcibex-logo.png"
+        .settings.size(150,200)             // Resize it to 150x200px
+        .print()                            // Show the image on the page
+    ,
+    
+    newText("instructions1", "Please press the spacebar to continue")
+        .settings.center()
+        .print()
+    ,
+    
+    newAudio("tAudio", "tswiz.mp3")         // Audio instructions, tswiz.mp3 is just a filler
+        .play()
+    ,
+    
+    newKey(" ")                             // Press Spacebar to go on 
+        .wait()
+    ,
+    
+    getAudio("tAudio")
+        .stop()
+    ,
+
+    getImage("logo")                        
+        .remove()                           
+    ,
+    
+    getText("instructions1")
+        .remove()
+    ,
+    
+    // EXAMPLES PAGE
+    newText("sentence", "This is the examples page")    
+        .settings.center()
+        .print()                            
+    ,
+    newKey("next1", " ")                    // Press Spacebar to go on
+        .wait()
+    ,
+    getText("sentence")
+        .remove()                           
+    ,
+    
+    // START SCREEN
+    newText("Start Screen", "Start Screen")
+        .settings.center()
+        .print()                            
+    ,
+    
+    newKey("next2", " ")                    // Press Spacebar to go on
+        .wait()
+    ,
+    
+    getText("Start Screen")
+        .remove()
+    ,
+);    
+
+// MAIN EXPERIMENT USING PENNCONTROLLER.TEMPLATE
+PennController.Template( "SourceGoal_Animacy_ItemsList_Edited.csv" , 
+    row => PennController(  
+    // EXAMPLE EXPERIMENT PAGE 1
+    newText("ex1", "This is and example trial page 1")
+        .settings.center()
+        .print()
+    ,
+    
+    newVideo("testVid1", row.FileLocationPres)    
+        .settings.size(1000, 500)                   // Size depends on the dimensions of the video. Change if needed.
+        .print()
+        .play()
+        .wait()
+    ,
+    
+    getText("ex1")
+        .remove()
+    ,
+    
+    getVideo("testVid1")
+        .remove()
+    ,
+    
+    // EXAMPLE EXPERIMENT PAGE 2
+    newVideo("testVid3", row.FileLocationAnim)    // variable.URLName doesn't exist yet. URL for the video
+        .settings.size(1000, 500)           // Size depends on the dimensions of the video. Change if needed.
+    ,
+    getVideo("testVid3")
+        .print()
+        .play()
+        .wait()
+    ,
+    
+    getText("ex1")
+        .remove()
+    ,
+    
+    getVideo("testVid3")
+        .remove()
+    ,
+    )
+    
+)   
+
+.log( "ID" , getVar("ID") )
+PennController.SendResults()
+
+// END THANK YOU
+PennController(
+    newText("<p>Thank you for your participation!</p>")
+        .print()
+    ,
+    newButton("void")
+        .wait()
+).setOption("hideProgressBar",true)         // The progress bar should not be visible for this trial
